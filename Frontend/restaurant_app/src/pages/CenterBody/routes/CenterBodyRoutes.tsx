@@ -14,7 +14,7 @@ import PastDeliveries from '../PastDeliveries';
 const CenterBodyRoutes: React.FC = () => {
 
   return (
-  //  <div className='flex-1'>
+   <div className='flex-1'>
      <Routes>
     <Route path={"/"} element={<Landing/>}/>
       <Route path={"/Home"} element={<Landing/>} />
@@ -26,7 +26,7 @@ const CenterBodyRoutes: React.FC = () => {
       <Route path={"/Current Job"} element={<CurrentOrderToDeliver/>}/>
       <Route path={"/Available Jobs"} element={<AvailableOrders/>} />
     </Routes>
-  //  </div>
+    </div>
     
     
   );

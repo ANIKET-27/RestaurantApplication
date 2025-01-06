@@ -4,24 +4,35 @@ import { CartItem } from "../../data/api/modals/cartModal";
 import Trash from "@mui/icons-material/DeleteOutline";
 import { AppDispatch } from "../../state/store";
 import { placeOrder, removeCartItem } from "../../state/user/cartSlice";
+import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 function RightSidebar() {
   const list: CartItem[] = useSelector((state: any) => state.cart.cartList);
 
   return (
-    <div className="w-96 h-full bg-color-cream border-2 border-green-800">
+    <div>
+       <div className="p-4 text-center rounded-tl-lg rounded-tr-lg bg-color-darkGreen shadow-md">
+            <div className="text-2xl font-bold text-color-cream">
+                <ShoppingCartIcon className="mr-4"></ShoppingCartIcon>
+                  Your Cart
+            </div>
+            </div>
+      <div className="w-96 max-h-full h-auto bg-color-cream border-2 border-green-800 rounded-bl-lg rounded-br-lg">
       {list.length === 0 ? <EmptyCart /> : <CartView list={list} />}
-    </div>
+      </div>
+      </div>
   );
 }
 
 const EmptyCart: React.FC = () => {
   return (
-    <div className="h-full flex justify-center items-center">
-      Your cart is Empty
+    <div className="flex flex-col justify-center items-center w-full h-72 bg-color-cream rounded-lg shadow-md">
+      <p className="text-lg font-semibold text-color-darkGreen">Your cart is Empty</p>
     </div>
   );
 };
+
 
 type CartViewProps = {
   list: CartItem[];
@@ -31,7 +42,7 @@ const CartView: React.FC<CartViewProps> = ({ list }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   return (
-    <div>
+     <div className="w-full h-full max-h-full" >
       <div className="w-full float-start">
         <TotalBill />
         <div
@@ -53,8 +64,9 @@ const CartView: React.FC<CartViewProps> = ({ list }) => {
           }}
         >
           Place Order
-        </div>
-      </div>
+        </div>  
+       </div>
+
       {list.map((item, index) => (
         <div className="m-4 p-2 bg-color-lightGreen flex" key={index}>
           <img src={item.dish.url} className="m-2 size-24 rounded-lg" alt={item.dish.name} />
