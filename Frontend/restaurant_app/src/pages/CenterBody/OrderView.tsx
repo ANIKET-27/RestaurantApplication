@@ -30,7 +30,9 @@ const OrderView: React.FC = () => {
 
   const order : OrderDTO  = location.state.order;
 
-  const driverId = '123'; // Example driver ID
+  const orderID = `${order.orderId}`;
+
+  // Example driver ID
   const mapInstance = useRef<L.Map | null>(null);
   const [driverMarker, setDriverMarker] = useState<L.Marker | null>(null);
   const [driverLocation, setDriverLocation] = useState<L.LatLng | null>(null);
@@ -72,11 +74,11 @@ const OrderView: React.FC = () => {
 
 
   // Use hook to retrieve and send the driver's location
-  useDriverLocationRetriever(driverId,currentUser);
+  useDriverLocationRetriever(orderID, currentUser);
 
   useEffect(() => {
     // Connect to WebSocket
-    websocketService.connect(driverId, (location) => { 
+    websocketService.connect(orderID, (location) => { 
       const newLocation = L.latLng(location.latitude, location.longitude);
       const currentDestinationLocation = order.orderStatus < 3 ? mapCenterRestaurantLocation : homeAddress;
       setDriverLocation(newLocation);
@@ -103,7 +105,7 @@ const OrderView: React.FC = () => {
     return () => {// Unsubscribe from WebSocket
       websocketService.disconnect(); // Disconnect WebSocket
     };
-  }, [driverMarker, driverId]);
+  }, [driverMarker, orderID]);
 
 
   useEffect(() => {
@@ -245,183 +247,3 @@ const OrderView: React.FC = () => {
 
 
 export default OrderView;
-
-
-
-// const mapCenterRestaurantLocation = { lat: 30.32649, lng: 78.042188 };
-
-// const OrderView: React.FC = () => {
-//   const mapRef = useRef<HTMLDivElement | null>(null);
-//   const currentUser = useSelector((state: any) => state.auth.userRole);
-//   const location = useLocation();
-//   const isUserDriver = currentUser === 'Driver';
-
-//   const order: OrderDTO = location.state.order;
-
-//   const driverId = '123'; // Example driver ID
-//   const mapInstance = useRef<L.Map | null>(null);
-//   const [driverMarker, setDriverMarker] = useState<L.Marker | null>(null);
-//   const [driverLocation, setDriverLocation] = useState<L.LatLng | null>(null);
-//   const routingControl = useRef<L.Routing.Control | null>(null);
-
-//   const homeAddress = { lat: order.latitude, lng: order.longitude };
-
-//   const createCustomIcon = (IconComponent: React.FC, color: string, size: string) => {
-//     const iconHtml = ReactDOMServer.renderToString(
-//       <div
-//         style={{
-//           display: 'flex',
-//           alignItems: 'center',
-//           justifyContent: 'center',
-//           borderRadius: '50%',
-//           backgroundColor: 'white',
-//           boxShadow: '0 1px 1px rgba(0,0,0,0.2)',
-//           padding: '8px',
-//         }}
-//       >
-//         <IconComponent style={{ color, fontSize: size }} />
-//       </div>
-//     );
-
-//     return L.divIcon({
-//       className: 'custom-div-icon',
-//       html: iconHtml,
-//       iconSize: [40, 40],
-//       iconAnchor: [20, 20],
-//     });
-//   };
-
-//   const restaurantIcon = createCustomIcon(RestaurantIcon, 'green', '24px');
-//   const driverIcon = createCustomIcon(MopedIcon, 'green', '24px');
-//   const homeIcon = createCustomIcon(HomeIcon, 'green', '24px');
-
-//   useDriverLocationRetriever(driverId, currentUser);
-
-//   useEffect(() => {
-//     websocketService.connect(driverId, (location) => {
-//       const newLocation = L.latLng(location.latitude, location.longitude);
-//       const currentDestinationLocation = order.orderStatus < 3 ? mapCenterRestaurantLocation : homeAddress;
-//       setDriverLocation(newLocation);
-
-//       if (driverMarker) {
-//         driverMarker.setLatLng(newLocation);
-//       } else if (mapInstance.current) {
-//         const newMarker = L.marker(newLocation, { icon: driverIcon })
-//           .addTo(mapInstance.current)
-//           .bindPopup('Driver is here!');
-//         setDriverMarker(newMarker);
-//       }
-
-//       if (routingControl.current) {
-//         routingControl.current.setWaypoints([
-//           newLocation,
-//           L.latLng(currentDestinationLocation.lat, currentDestinationLocation.lng),
-//         ]);
-//       }
-//     });
-
-//     return () => {
-//       websocketService.disconnect();
-//     };
-//   }, [driverMarker, driverId]);
-
-//   useEffect(() => {
-//     if (mapRef.current) {
-//       const map = L.map(mapRef.current, {
-//         center: mapCenterRestaurantLocation,
-//         zoom: 14,
-//       });
-//       mapInstance.current = map;
-
-//       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-//         attribution: '© OpenStreetMap contributors',
-//       }).addTo(map);
-
-//       const control = L.Routing.control({
-//         routeWhileDragging: false,
-//         show: isUserDriver,
-//         lineOptions: {
-//           styles: [
-//             {
-//               color: 'darkgreen',
-//               weight: 6,
-//             },
-//           ],
-//         },
-//         createMarker: () => null,
-//       }).addTo(map);
-
-//       routingControl.current = control;
-
-//       if (order.orderStatus < 3) {
-//         L.polyline([homeAddress, mapCenterRestaurantLocation], {
-//           color: 'black',
-//           weight: 4,
-//           opacity: 0.8,
-//           dashArray: '10, 10',
-//           lineJoin: 'round',
-//         }).addTo(map);
-//       }
-
-//       L.marker(mapCenterRestaurantLocation, { icon: restaurantIcon })
-//         .addTo(map)
-//         .bindPopup('Restaurant is here!');
-//       L.marker(homeAddress, { icon: homeIcon }).addTo(map).bindPopup('Delivery Address');
-
-//       return () => {
-//         map.remove();
-//       };
-//     }
-//   }, []);
-
-//   return (
-//     <div className="flex-1 p-6 bg-gray-50 min-h-screen">
-//       <h1 className="text-3xl font-extrabold text-center text-green-800 mb-6">
-//         Track Your Order
-//       </h1>
-//       <div className="m-4 shadow-md rounded-lg p-6 bg-white border border-gray-300">
-//         <div className="mb-6">
-//           <h2 className="text-xl font-semibold text-green-700 mb-4">
-//             Order Details
-//           </h2>
-//           <div className="bg-green-50 p-4 shadow-sm rounded-lg">
-//             <p className="text-gray-800">
-//               <strong className="text-green-900">Order ID:</strong> {order.orderId}
-//             </p>
-//             <p className="text-gray-800">
-//               <strong className="text-green-900">Order Status:</strong> {orderStatusMap.get(order.orderStatus)?.statusOfTheOrder}
-//             </p>
-//             <p className="text-gray-800">
-//               <strong className="text-green-900">Order Date:</strong> {formatDate(order.orderDate)}
-//             </p>
-//             <p className="text-gray-800">
-//               <strong className="text-green-900">Total Amount:</strong> ${order.totalAmount}
-//             </p>
-//           </div>
-//         </div>
-
-//         <div className="flex justify-center">
-//           {isUserDriver ? (
-//             <div className="flex flex-col items-center">
-//               <p className="text-gray-600 mb-2">Take Action:</p>
-//               {renderActionButton(order.orderStatus, currentUser)}
-//             </div>
-//           ) : (
-//             <div className="flex flex-col items-center">
-//               <p className="text-gray-600 mb-2">Order Progress:</p>
-//               {renderOrderStatus(order.orderStatus)}
-//             </div>
-//           )}
-//         </div>
-//       </div>
-
-//       <div
-//         ref={mapRef}
-//         style={{ height: '600px', width: '100%' }}
-//         className="shadow-lg rounded-lg border border-gray-200"
-//       />
-//     </div>
-//   );
-// };
-
-// export default OrderView;
