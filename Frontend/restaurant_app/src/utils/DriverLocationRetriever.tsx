@@ -26,7 +26,7 @@ export const useDriverLocationRetriever = (
             const intervalId = setInterval(() => {
               console.log("Emitting Driver Location Every 10 Seconds");
               websocketService.emitDriverLocation(driverId, location); // Emit the same location
-            }, 10000); // 10 seconds interval
+            }, 5000); // 10 seconds interval
   
             // Cleanup the interval when the component unmounts or user changes
             return () => clearInterval(intervalId);

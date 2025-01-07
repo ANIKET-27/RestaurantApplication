@@ -28,6 +28,8 @@ export default function App() {
   },[role])
 
  return (
+  <div className="w-full min-h-screen">
    <RoleBaseRoutes/>
+   </div>
   )
 }

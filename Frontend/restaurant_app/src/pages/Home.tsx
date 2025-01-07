@@ -9,7 +9,7 @@ import NavBar from "./navbar/NavBar"
 function Home() {
 
 return (
-    <div className='h-100% w-100%  bg-color-cream flex-col'>
+    <div className='h-full w-full m-4 bg-color-cream flex flex-col'>
       <NavBar {...{role : "public"}}/>
       <div className=" h-full w-full bg-transparent flex flex-1">
         <CenterBodyRoutes/>

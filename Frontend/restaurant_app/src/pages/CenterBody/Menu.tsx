@@ -8,7 +8,7 @@ import { DishDto } from '../../data/api/modals/response/menu';
 import { DISHES_API } from '../../data/api/public';
 import { AppDispatch } from '../../state/store';
 import { addDishToCart } from '../../state/user/cartSlice';
-
+import Loading from '../../components/Loading';
 
 
 
@@ -18,6 +18,7 @@ function Menu() {
   const[dishes,setDishes]= useState<DishDto[]>([])
 
   const[loading, setLoading] = useState(true)
+  const[error , setError] = useState(false)
 
   async function fetchDishes(){
 
@@ -34,6 +35,7 @@ function Menu() {
           setDishes(result)
       }
     ).catch((e) => {
+       setError(true);
        console.log(e);
     })
     .finally(()=>{setLoading(false)})
@@ -47,12 +49,22 @@ function Menu() {
   },[])
 
   return (
- //<div className='flex-1'>
 
-  <div className='flex-1 overflow-auto'>
+  <div className='w-full min-h-screen'>
     {
-      loading ? <div>Loading</div>
+      loading ? <div className='flex flex-col items-center justify-center'> <Loading/> </div>
       :
+      error ?
+      <div className="flex flex-col items-center justify-center min-h-screen">
+  <p className="text-3xl font-extrabold text-color-darkGreen mb-4">
+    Oops!
+  </p>
+  <p className="text-2xl font-semibold text-color-darkGreen">
+    Network Error Occurred.
+  </p>
+</div>
+
+:
       <div className='grid grid-cols-4 gap-10 bg-color-cream'>
       {
         dishes.map(dish => (
@@ -64,9 +76,6 @@ function Menu() {
     </div>
     }
     </div>
-
- //   </div>
-    
   )
 }
 

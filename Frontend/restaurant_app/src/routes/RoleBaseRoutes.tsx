@@ -9,7 +9,7 @@ import OrderView from '../pages/CenterBody/OrderView.tsx'
 
 function RoleBaseRoutes() {
   return (
-    <div className=' w-screen h-screen p-4 bg-color-cream'>
+    <div className=' w-full h-full p-4 bg-color-cream'>
       <Routes>
         <Route path="/*" element={<Home/>}></Route>
         <Route path="/user/*" element={<UserHome/>}></Route>

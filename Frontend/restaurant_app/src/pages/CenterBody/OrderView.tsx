@@ -97,6 +97,7 @@ const OrderView: React.FC = () => {
           newLocation,
           L.latLng(currentDestinationLocation.lat, currentDestinationLocation.lng),
         ]);
+        routingControl.current.hide();
       }
     });
 
@@ -127,7 +128,7 @@ const OrderView: React.FC = () => {
       // Add Routing Control
       const control = L.Routing.control({
         routeWhileDragging: false,
-        show: isUserDriver, // Show instructions only if the user is a driver
+        show: false, // Show instructions only if the user is a driver
         lineOptions: {
           styles: [
             {

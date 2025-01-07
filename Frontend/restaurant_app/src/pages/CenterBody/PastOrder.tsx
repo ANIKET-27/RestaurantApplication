@@ -21,7 +21,7 @@ const dispatch = useDispatch<AppDispatch>()
  
 
   return (
-    <div className='flex flex-1 justify-center '>
+    <div className='flex flex-1 justify-center h-screen'>
         {
         loading ? <div>
           <Loading/>
